@@ -21,6 +21,7 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     product_name = Column(String(200), nullable=False, index=True)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    supplier_id = Column(Integer, ForeignKey("suppliers.id"), nullable=True)
     brand = Column(String(100), default="")
     barcode = Column(String(50), unique=True, nullable=True, index=True)
     hsn_code = Column(String(20), default="")
@@ -45,3 +46,4 @@ class Product(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     category = relationship("Category", back_populates="products")
+    supplier = relationship("Supplier", back_populates="products")

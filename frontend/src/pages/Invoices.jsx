@@ -1,12 +1,14 @@
 import Header from '../components/Header';
 import DataTable from '../components/DataTable';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { formatDateTime } from '../utils/formatters';
-import { Download } from 'lucide-react';
+import { Download, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Invoices() {
+  const navigate = useNavigate();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +41,12 @@ export default function Invoices() {
       <div style={{ padding: 28, flex: 1, overflowY: 'auto' }}>
         <div className="glass-card" style={{ overflow: 'hidden' }}>
           <DataTable columns={columns} data={invoices} loading={loading}
-            actions={row => <button className="btn btn-ghost btn-icon btn-sm" onClick={e => { e.stopPropagation(); downloadPdf(row); }}><Download size={14} /></button>}
+            actions={row => (
+              <>
+                <button className="btn btn-ghost btn-icon btn-sm" title="View" onClick={e => { e.stopPropagation(); navigate(`/invoices/${row.sale_id}`); }}><Eye size={14} /></button>
+                <button className="btn btn-ghost btn-icon btn-sm" title="Download" onClick={e => { e.stopPropagation(); downloadPdf(row); }}><Download size={14} /></button>
+              </>
+            )}
           />
         </div>
       </div>

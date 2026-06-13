@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 const GST_OPTIONS = [0, 5, 12, 18, 28];
 
 const emptyProduct = {
-  product_name: '', category_id: '', brand: '', barcode: '', hsn_code: '',
+  product_name: '', category_id: '', supplier_id: '', brand: '', barcode: '', hsn_code: '',
   gst_percentage: 18, purchase_price: '', selling_price: '', stock_quantity: 0, minimum_stock: 10, expiry_date: '',
 };
 
@@ -19,6 +19,7 @@ export default function Products() {
   const { isAdmin } = useAuth();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState({ search: '', category_id: '', stock_status: '' });
   const [modalOpen, setModalOpen] = useState(false);
@@ -45,13 +46,17 @@ export default function Products() {
     try { const res = await api.get('/products/categories'); setCategories(res.data); } catch { /* ignore */ }
   }
 
+  async function loadSuppliers() {
+    try { const res = await api.get('/suppliers', { params: { limit: 100 } }); setSuppliers(res.data.suppliers || []); } catch { /* ignore */ }
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
-  useEffect(() => { loadProducts(); loadCategories(); }, [filter]);
+  useEffect(() => { loadProducts(); loadCategories(); loadSuppliers(); }, [filter]);
 
   function openAdd() { setEditingProduct(null); setForm(emptyProduct); setModalOpen(true); }
   function openEdit(product) {
     setEditingProduct(product);
-    setForm({ ...product, category_id: product.category_id || '', expiry_date: product.expiry_date || '' });
+    setForm({ ...product, category_id: product.category_id || '', supplier_id: product.supplier_id || '', expiry_date: product.expiry_date || '' });
     setModalOpen(true);
   }
 
@@ -60,7 +65,7 @@ export default function Products() {
     if (!form.product_name || !form.selling_price) { toast.error('Name and selling price are required'); return; }
     setSaving(true);
     try {
-      const data = { ...form, purchase_price: parseFloat(form.purchase_price) || 0, selling_price: parseFloat(form.selling_price), stock_quantity: parseInt(form.stock_quantity) || 0, minimum_stock: parseInt(form.minimum_stock) || 10, gst_percentage: parseFloat(form.gst_percentage), category_id: form.category_id || null, expiry_date: form.expiry_date || null, barcode: form.barcode || null };
+      const data = { ...form, purchase_price: parseFloat(form.purchase_price) || 0, selling_price: parseFloat(form.selling_price), stock_quantity: parseInt(form.stock_quantity) || 0, minimum_stock: parseInt(form.minimum_stock) || 10, gst_percentage: parseFloat(form.gst_percentage), category_id: form.category_id || null, supplier_id: form.supplier_id || null, expiry_date: form.expiry_date || null, barcode: form.barcode || null };
       if (editingProduct) { await api.put(`/products/${editingProduct.id}`, data); toast.success('Product updated'); }
       else { await api.post('/products', data); toast.success('Product added'); }
       setModalOpen(false); loadProducts();
@@ -150,6 +155,13 @@ export default function Products() {
             <select className="form-select" value={form.category_id} onChange={e => setForm(f => ({ ...f, category_id: e.target.value }))}>
               <option value="">None</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Supplier</label>
+            <select className="form-select" value={form.supplier_id} onChange={e => setForm(f => ({ ...f, supplier_id: e.target.value }))}>
+              <option value="">None</option>
+              {suppliers.map(s => <option key={s.id} value={s.id}>{s.supplier_name}</option>)}
             </select>
           </div>
           <div className="form-group">

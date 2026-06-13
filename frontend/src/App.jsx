@@ -7,9 +7,16 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import Customers from './pages/Customers';
+import Suppliers from './pages/Suppliers';
+import Purchases from './pages/Purchases';
+import NewPurchase from './pages/NewPurchase';
+import Reports from './pages/Reports';
+import Analytics from './pages/Analytics';
+import Expenses from './pages/Expenses';
 import NewSale from './pages/NewSale';
 import Sales from './pages/Sales';
 import Invoices from './pages/Invoices';
+import InvoiceView from './pages/InvoiceView';
 import AuditLogs from './pages/AuditLogs';
 import Settings from './pages/Settings';
 import StaffManagement from './pages/StaffManagement';
@@ -42,9 +49,16 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
             <Route path="/customers" element={<Customers />} />
+            <Route path="/suppliers" element={<Suppliers />} />
+            <Route path="/purchases" element={<Purchases />} />
+            <Route path="/purchases/new" element={<NewPurchase />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/expenses" element={<Expenses />} />
             <Route path="/sales/new" element={<NewSale />} />
             <Route path="/sales" element={<Sales />} />
             <Route path="/invoices" element={<Invoices />} />
+            <Route path="/invoices/:saleId" element={<InvoiceView />} />
 
             {/* Admin-only routes */}
             <Route path="/audit-logs" element={<ProtectedRoute requiredRole="admin"><AuditLogs /></ProtectedRoute>} />

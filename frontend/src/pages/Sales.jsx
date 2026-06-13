@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import DataTable from '../components/DataTable';
 import Modal from '../components/Modal';
@@ -10,6 +11,7 @@ import toast from 'react-hot-toast';
 
 export default function Sales() {
   const { isAdmin } = useAuth();
+  const navigate = useNavigate();
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState({ status: '', payment_status: '' });
@@ -107,7 +109,7 @@ export default function Sales() {
           <DataTable columns={columns} data={sales} loading={loading} searchable={false}
             actions={row => (
               <>
-                <button className="btn btn-ghost btn-icon btn-sm" title="View" onClick={e => { e.stopPropagation(); setDetailModal(row); }}><Eye size={14} /></button>
+                <button className="btn btn-ghost btn-icon btn-sm" title="View" onClick={e => { e.stopPropagation(); navigate(`/invoices/${row.id}`); }}><Eye size={14} /></button>
                 <button className="btn btn-ghost btn-icon btn-sm" title="Download PDF" onClick={e => { e.stopPropagation(); downloadPdf(row); }}><Download size={14} /></button>
                 {row.payment_status !== 'paid' && row.status === 'completed' && (
                   <button className="btn btn-ghost btn-icon btn-sm" title="Record Payment" onClick={e => { e.stopPropagation(); setPaymentModal(row); setPaymentAmount(''); }} style={{ color: 'var(--color-info)' }}><CreditCard size={14} /></button>

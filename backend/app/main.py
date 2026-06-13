@@ -17,6 +17,13 @@ from app.customers.router import router as customers_router
 from app.inventory.router import router as inventory_router
 from app.sales.router import router as sales_router
 from app.invoices.router import router as invoices_router
+from app.suppliers.router import router as suppliers_router
+from app.purchases.router import router as purchases_router
+from app.reports.router import router as reports_router
+from app.analytics.router import router as analytics_router
+from app.expenses.router import router as expenses_router
+from app.backup.router import router as backup_router
+from app.search.router import router as search_router
 
 
 @asynccontextmanager
@@ -27,6 +34,8 @@ async def lifespan(app: FastAPI):
     try:
         seed_default_admin(db)
         get_settings(db)  # Creates default settings row
+        from app.expenses.service import seed_default_categories
+        seed_default_categories(db)  # Creates default expense categories
     finally:
         db.close()
     print("[OK] RetailERP Lite backend started!")
@@ -59,6 +68,13 @@ app.include_router(customers_router, prefix="/api")
 app.include_router(inventory_router, prefix="/api")
 app.include_router(sales_router, prefix="/api")
 app.include_router(invoices_router, prefix="/api")
+app.include_router(suppliers_router, prefix="/api")
+app.include_router(purchases_router, prefix="/api")
+app.include_router(reports_router, prefix="/api")
+app.include_router(analytics_router, prefix="/api")
+app.include_router(expenses_router, prefix="/api")
+app.include_router(backup_router, prefix="/api")
+app.include_router(search_router, prefix="/api")
 
 
 @app.get("/api/health")

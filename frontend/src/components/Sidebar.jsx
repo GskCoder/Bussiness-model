@@ -2,15 +2,20 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, Package, Users, ShoppingCart, FileText,
-  Settings, Shield, ChevronLeft, ChevronRight, Store,
+  Settings, Shield, ChevronLeft, ChevronRight, Store, BarChart3, LineChart, Wallet
 } from 'lucide-react';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/products', label: 'Products', icon: Package },
   { path: '/customers', label: 'Customers', icon: Users },
+  { path: '/suppliers', label: 'Suppliers', icon: Store },
+  { path: '/purchases', label: 'Purchases', icon: Package },
   { path: '/sales', label: 'Sales', icon: ShoppingCart },
   { path: '/invoices', label: 'Invoices', icon: FileText },
+  { path: '/reports', label: 'Reports', icon: BarChart3 },
+  { path: '/analytics', label: 'Analytics', icon: LineChart },
+  { path: '/expenses', label: 'Expenses', icon: Wallet },
   { divider: true },
   { path: '/audit-logs', label: 'Audit Logs', icon: Shield, adminOnly: true },
   { path: '/staff', label: 'Staff', icon: Users, adminOnly: true },

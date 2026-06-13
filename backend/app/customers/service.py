@@ -79,3 +79,37 @@ def get_customers_with_credit(db: Session) -> list:
     """Get customers who have outstanding credit (total_purchases is tracked separately)."""
     # This will be more useful when sales with credit are linked
     return db.query(Customer).filter(Customer.total_purchases > 0).order_by(Customer.total_purchases.desc()).all()
+
+
+def get_customers_with_credit_sales(db: Session) -> list:
+    """Get customers who have outstanding credit sales (unpaid/partial)."""
+    from app.sales.models import Sale
+    customer_ids = (
+        db.query(Sale.customer_id)
+        .filter(
+            Sale.customer_id.isnot(None),
+            Sale.payment_status.in_(["partial", "unpaid"]),
+            Sale.status == "completed",
+        )
+        .distinct()
+        .all()
+    )
+    ids = [cid[0] for cid in customer_ids]
+    if not ids:
+        return []
+    return db.query(Customer).filter(Customer.id.in_(ids)).order_by(Customer.customer_name).all()
+
+
+def get_customer_sales(db: Session, customer_id: int, skip: int = 0, limit: int = 50) -> list:
+    """Get all sales for a specific customer."""
+    from app.sales.models import Sale
+    from app.sales.service import get_sale_with_customer_name
+    sales = (
+        db.query(Sale)
+        .filter(Sale.customer_id == customer_id)
+        .order_by(Sale.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+    return [get_sale_with_customer_name(db, s) for s in sales]
