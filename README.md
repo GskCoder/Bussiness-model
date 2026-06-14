@@ -109,6 +109,4 @@ Papa_project/
 └── README.md
 ```
 
-## License
 
-MIT
