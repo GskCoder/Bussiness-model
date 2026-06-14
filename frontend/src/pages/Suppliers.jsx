@@ -12,7 +12,7 @@ export default function Suppliers() {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
 
@@ -33,7 +33,7 @@ export default function Suppliers() {
       loadSuppliers();
     }, 300);
     return () => clearTimeout(delayDebounceFn);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
   const handleAdd = () => {
@@ -59,17 +59,18 @@ export default function Suppliers() {
   };
 
   const columns = [
-    { header: 'Supplier Name', accessor: 'supplier_name' },
-    { header: 'Contact Person', accessor: 'contact_person' },
-    { header: 'Phone', accessor: 'phone_number' },
-    { header: 'GSTIN', accessor: 'gstin' },
-    { header: 'State', accessor: 'state' },
-    { 
-      header: 'Actions', 
+    { key: 'supplier_name', label: 'Supplier Name', accessor: 'supplier_name' },
+    { key: 'contact_person', label: 'Contact Person', accessor: 'contact_person' },
+    { key: 'phone_number', label: 'Phone', accessor: 'phone_number' },
+    { key: 'gstin', label: 'GSTIN', accessor: 'gstin' },
+    { key: 'state', label: 'State', accessor: 'state' },
+    {
+      key: 'actions',
+      label: 'Actions',
       accessor: 'actions',
       render: (row) => (
         <div className="flex items-center gap-2">
-          <button 
+          <button
             className="p-1.5 text-indigo-400 hover:bg-indigo-400/10 rounded transition-colors"
             onClick={(e) => { e.stopPropagation(); handleEdit(row); }}
             title="Edit Supplier"
@@ -77,7 +78,7 @@ export default function Suppliers() {
             <Edit2 size={16} />
           </button>
           {isAdmin && (
-            <button 
+            <button
               className="p-1.5 text-rose-400 hover:bg-rose-400/10 rounded transition-colors"
               onClick={(e) => { e.stopPropagation(); handleDelete(row); }}
               title="Delete Supplier"
@@ -91,32 +92,36 @@ export default function Suppliers() {
   ];
 
   return (
-    <div className="page-container">
+    <>
       <Header title="Suppliers" />
+      <div style={{ padding: 28, flex: 1, overflowY: 'auto' }}>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div className="flex-1 max-w-md">
+        {/* Top Action Bar matching Customers.jsx */}
+        <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center' }}>
           <input
             type="text"
             placeholder="Search suppliers by name, phone, or GSTIN..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input-field"
+            className="form-input"
+            style={{ maxWidth: 320 }}
+          />
+          <div style={{ flex: 1 }} />
+          <button className="btn btn-primary" onClick={handleAdd} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Plus size={16} />
+            Add Supplier
+          </button>
+        </div>
+
+        {/* Table Container matching Customers.jsx */}
+        <div className="glass-card" style={{ overflow: 'hidden' }}>
+          <DataTable
+            columns={columns}
+            data={suppliers}
+            loading={loading}
+            emptyMessage="No suppliers found."
           />
         </div>
-        <button className="btn-primary flex items-center gap-2" onClick={handleAdd}>
-          <Plus size={18} />
-          <span>Add Supplier</span>
-        </button>
-      </div>
-
-      <div className="card">
-        <DataTable
-          columns={columns}
-          data={suppliers}
-          loading={loading}
-          emptyMessage="No suppliers found."
-        />
       </div>
 
       {isFormOpen && (
@@ -127,6 +132,6 @@ export default function Suppliers() {
           onSaved={loadSuppliers}
         />
       )}
-    </div>
+    </>
   );
 }

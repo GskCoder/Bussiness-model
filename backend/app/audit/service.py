@@ -1,8 +1,18 @@
 import json
+from decimal import Decimal
+from datetime import date, datetime
 from sqlalchemy.orm import Session
 
 from app.audit.models import AuditLog
 from app.auth.models import User
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        if isinstance(obj, (datetime, date)):
+            return obj.isoformat()
+        return super().default(obj)
 
 
 def log_action(
@@ -21,8 +31,8 @@ def log_action(
         action=action,
         entity_type=entity_type,
         entity_id=entity_id,
-        old_values=json.dumps(old_values) if old_values else None,
-        new_values=json.dumps(new_values) if new_values else None,
+        old_values=json.dumps(old_values, cls=CustomJSONEncoder) if old_values else None,
+        new_values=json.dumps(new_values, cls=CustomJSONEncoder) if new_values else None,
     )
     db.add(entry)
     # Don't commit here — let the caller's transaction commit it

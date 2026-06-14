@@ -14,6 +14,7 @@ from app.products.models import Product, Category
 from app.customers.models import Customer
 from app.inventory.models import InventoryTransaction
 from app.expenses.models import Expense
+from app.purchases.models import Purchase
 from app.settings.service import get_settings
 
 

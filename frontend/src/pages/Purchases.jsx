@@ -27,19 +27,19 @@ export default function Purchases() {
   useEffect(() => {
     loadPurchases();
   }, []);
-
+  
   const columns = [
-    { header: 'Invoice No.', accessor: 'supplier_invoice_number' },
-    { header: 'Date', render: (row) => formatDateTime(row.purchase_date) },
-    { header: 'Supplier', accessor: 'supplier_name' },
-    { header: 'Total Amount', render: (row) => formatCurrency(row.total_amount) },
-    { 
-      header: 'Payment Status', 
+    { key: 'supplier_invoice_number', label: 'Invoice No.', accessor: 'supplier_invoice_number' },
+    { key: 'purchase_date', label: 'Date', render: (row) => formatDateTime(row.purchase_date) },
+    { key: 'supplier_name', label: 'Supplier', accessor: 'supplier_name' },
+    { key: 'total_amount', label: 'Total Amount', render: (row) => formatCurrency(row.total_amount) },
+    {
+      key: 'payment_status',
+      label: 'Payment Status',
       render: (row) => (
-        <span className={`badge ${
-          row.payment_status === 'paid' ? 'badge-success' : 
+        <span className={`badge ${row.payment_status === 'paid' ? 'badge-success' :
           row.payment_status === 'partial' ? 'badge-warning' : 'badge-danger'
-        }`}>
+          }`}>
           {row.payment_status.toUpperCase()}
         </span>
       )
@@ -47,28 +47,35 @@ export default function Purchases() {
   ];
 
   return (
-    <div className="page-container">
+    <>
       <Header title="Purchases" />
-      
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-slate-100">Purchase History</h2>
-        <button 
-          className="btn-primary flex items-center gap-2"
-          onClick={() => navigate('/purchases/new')}
-        >
-          <Plus size={18} />
-          <span>Record New Purchase</span>
-        </button>
-      </div>
+      <div style={{ padding: 28, flex: 1, overflowY: 'auto' }}>
 
-      <div className="card">
-        <DataTable
-          columns={columns}
-          data={purchases}
-          loading={loading}
-          emptyMessage="No purchases recorded yet."
-        />
+        {/* Top Action Bar */}
+        <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, color: '#f1f5f9' }}>
+            Purchase History
+          </h2>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate('/purchases/new')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <Plus size={16} />
+            Record New Purchase
+          </button>
+        </div>
+
+        {/* Table Container */}
+        <div className="glass-card" style={{ overflow: 'hidden' }}>
+          <DataTable
+            columns={columns}
+            data={purchases}
+            loading={loading}
+            emptyMessage="No purchases recorded yet."
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

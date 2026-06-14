@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import SearchPalette from './SearchPalette';
 
 export default function Layout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -18,6 +19,7 @@ export default function Layout() {
       }}>
         <Outlet />
       </main>
+      <SearchPalette />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
-import { LogOut, User, ChevronDown, Plus } from 'lucide-react';
+import { LogOut, User, ChevronDown, Plus, Search, Command } from 'lucide-react';
 
 export default function Header({ title }) {
   const { user, logout } = useAuth();
@@ -17,6 +17,10 @@ export default function Header({ title }) {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
+  const triggerSearch = () => {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
+  };
+
   return (
     <header style={{
       height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -26,6 +30,38 @@ export default function Header({ title }) {
       <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--color-text-primary)' }}>{title}</h1>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        {/* Search trigger */}
+        <button
+          onClick={triggerSearch}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '7px 14px', borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--color-border)', background: 'var(--color-surface)',
+            cursor: 'pointer', transition: 'var(--transition)',
+            color: 'var(--color-text-muted)', fontSize: 13,
+            minWidth: 200,
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--color-text-muted)';
+            e.currentTarget.style.background = 'var(--color-surface-elevated)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--color-border)';
+            e.currentTarget.style.background = 'var(--color-surface)';
+          }}
+        >
+          <Search size={14} />
+          <span style={{ flex: 1, textAlign: 'left' }}>Search...</span>
+          <kbd style={{
+            padding: '1px 6px', borderRadius: 4,
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            fontSize: 11, color: 'var(--color-text-muted)',
+          }}>
+            Ctrl+K
+          </kbd>
+        </button>
+
         {/* Quick Sale button */}
         <button
           className="btn btn-primary btn-sm"

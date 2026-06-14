@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: retailerp_backend
+    restart: unless-stopped
+    volumes:
+      # Mount the local SQLite database file to persist data
+      # If retailerp.db exists locally, it will be mapped into the container
+      - ./backend/retailerp.db:/app/retailerp.db
+    # Not exposing ports externally here since the frontend container's Nginx will proxy to it internally
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: retailerp_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"  # Expose port 80 to the host machine
+    depends_on:
+      - backend
